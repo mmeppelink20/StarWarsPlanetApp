@@ -1,0 +1,114 @@
+﻿<Window x:Class="WpfPresentation.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPresentation"
+        mc:Ignorable="d"
+        Title="Login" Height="650" Width="650" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" StateChanged="Window_StateChanged" MinHeight="650" MinWidth="650" MaxWidth="650" MaxHeight="650" Icon="jediSymbol.png">
+    <Border CornerRadius="25" Padding="10,10,10,10" Background="#202327">
+        <!-- fix to two grid column layout if time -->
+    
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <!--close button column-->
+                <ColumnDefinition Width="569.6"/>
+                <!-- main column -->
+                <ColumnDefinition Width="30"/>
+                <!--close button column-->
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <!--close button-->
+                <RowDefinition Height="175"/>
+                <!--image-->
+
+                <RowDefinition Height="30"/>
+                <!--filler-->
+
+                <RowDefinition Height="45"/>
+                <!--username label-->
+                <RowDefinition Height="50"/>
+                <!--username text-->
+
+                <RowDefinition Height="35"/>
+                <!--filler-->
+
+                <RowDefinition Height="45"/>
+                <!--password label-->
+                <RowDefinition Height="50"/>
+                <!--password text-->
+
+                <RowDefinition Height="60"/>
+                <!--filler-->
+
+                <RowDefinition Height="50"/>
+                <!--login button-->
+                <RowDefinition Height="20"/>
+                <!--register button-->
+                <RowDefinition Height="50"/>
+                <!--register button-->
+            </Grid.RowDefinitions>
+
+
+
+
+            <Button x:Name="btnClose" Grid.Column="2"  BorderBrush="#7F000000"  BorderThickness="4" Foreground="{x:Null}" Click="btnClose_Click" Background="#FF191B1D" Padding="0" Margin="1">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+                <Image x:Name="imgClose" Source="closeButton.png" Margin="1" Cursor="Hand"/>
+            </Button>
+
+            <Image x:Name="mainLogo" Source="jediSymbol.png" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="0,0,0,25"></Image>
+
+            <Label x:Name="lblUsername" Grid.Row="3" Grid.Column="1" Foreground="#DDDD" Margin="20,0" 
+                   FontSize="25" FontWeight="Bold">Username
+            </Label>
+
+            <Label Grid.Row="2" Grid.Column="1" Background="#DDDD" Margin="75,8,75,20"></Label>
+
+            <TextBox x:Name="txtUsername" Grid.Row="4" Grid.Column="1" Padding="10,0" Margin="25,0" 
+                     VerticalContentAlignment="Center" BorderThickness="2" BorderBrush="#FF0B0B0C" 
+                     Background="#FF0D0E0F" FontSize="20" Foreground="#DDDDDDDD">
+                <TextBox.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </TextBox.Resources>
+            </TextBox>
+
+            <Label x:Name="lblPassword" Grid.Row="6" Grid.Column="1" Foreground="#DDDD" Margin="20,0" FontSize="25" 
+                   FontWeight="Bold">Password
+            </Label>
+
+            <PasswordBox x:Name="psdPassword" Style="{StaticResource roundcornerpassword}" Grid.Row="7" Grid.Column="1" 
+                         Padding="10,0,10,5" Margin="25,0" VerticalContentAlignment="Center" BorderThickness="2" 
+                         BorderBrush="Black" Background="#FF0D0E0F" Foreground="#DDDDDDDD" FontSize="20">
+            </PasswordBox>
+
+
+            <Button x:Name="btnLogin" Grid.Row="9" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                     Margin="25,0" Background="#FF4488CC" Foreground="{x:Null}" Cursor="Hand" Click="btnLogin_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+                <TextBlock Foreground="White" FontSize="15" FontWeight="Bold" >Login</TextBlock>
+            </Button>
+
+            <TextBlock x:Name="lblRegister" Grid.Row="10" Grid.Column="1" Foreground="#FF6E6E6E" FontSize="13" Margin="25,0,0,0" Visibility="Hidden">
+                Need an account? 
+                <Hyperlink FontWeight="Bold" TextDecorations="{x:Null}">Register</Hyperlink>
+            </TextBlock>
+
+            <Label x:Name="windowBar" Grid.Row="0" Grid.ColumnSpan="2" MouseDown="windowBar_MouseDown"></Label>
+
+        </Grid>
+    </Border>
+</Window>

@@ -64,6 +64,52 @@ namespace DataAccessLayer
             return result;
         }
 
+        public List<string> SelectAllUserRoles()
+        {
+            List<string> roles = new List<string>();
+
+            // connection
+            DBConnection connectionFactory = new DBConnection();
+            var conn = connectionFactory.GetConnection();
+
+            // command text
+            var cmdText = "sp_select_all_user_roles";
+
+            // command
+            var cmd = new SqlCommand(cmdText, conn);
+
+            // command type
+            cmd.CommandType = CommandType.StoredProcedure;
+
+
+            // try-catch-finally
+            try
+            {
+                conn.Open();
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        roles.Add(reader.GetString(0));
+                    }
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                // close the connection
+                conn.Close();
+            }
+            return roles;
+        }
+
         public List<string> SelectRolesByUserID(int userID)
         {
             List<string> roles = new List<string>();
@@ -104,6 +150,7 @@ namespace DataAccessLayer
                         roles.Add(reader.GetString(0));
                     }
                 }
+                reader.Close();
             }
             catch (Exception ex)
             {
@@ -161,7 +208,9 @@ namespace DataAccessLayer
 
                     user.UserID = reader.GetInt32(0);
                     user.UserName = reader.GetString(1);
-                    user.Active = reader.GetBoolean(2);
+                    user.FirstName = reader.GetString(2);
+                    user.FamilyName = reader.GetString(3);
+                    user.Active = reader.GetBoolean(4);
                 }
                 // close the reader
                 reader.Close();
@@ -179,9 +228,134 @@ namespace DataAccessLayer
             return user;
         }
 
+        public int AddNewUser(string firstName, string lastName, string userName)
+        {
+
+            int result = 0;
+
+            var connectionFactory = new DBConnection();
+            var conn = connectionFactory.GetConnection();
+
+            var cmdText = "sp_insert_user";
+
+            var cmd = new SqlCommand(cmdText, conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("@FirstName", SqlDbType.NVarChar, 50);
+            cmd.Parameters.Add("@FamilyName", SqlDbType.NVarChar, 100);
+            cmd.Parameters.Add("@UserName", SqlDbType.NVarChar, 100);
+
+
+            cmd.Parameters["@FirstName"].Value = firstName;
+            cmd.Parameters["@FamilyName"].Value = lastName;
+            cmd.Parameters["@UserName"].Value = userName;
+
+            try
+            {
+                conn.Open();
+
+
+                result = Convert.ToInt32(cmd.ExecuteNonQuery());
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                
+            }
+            return result;
+        }
+
         public int UpdatePasswordHash(int userID, string passwordHash, string oldPasswordHash)
         {
             throw new NotImplementedException();
+        }
+
+        public int AddUserRole(int userId, string userName, string roleID)
+        {
+            int result = 0;
+
+            var connectionFactory = new DBConnection();
+            var conn = connectionFactory.GetConnection();
+
+            var cmdText = "sp_add_user_roles";
+
+            var cmd = new SqlCommand(cmdText, conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("@UserID", SqlDbType.Int);
+            cmd.Parameters.Add("@UserName", SqlDbType.NVarChar, 100);
+            cmd.Parameters.Add("@RoleID", SqlDbType.NVarChar, 50);
+
+
+            cmd.Parameters["@UserID"].Value = userId;
+            cmd.Parameters["@UserName"].Value = userName;
+            cmd.Parameters["@RoleID"].Value = roleID;
+
+            try
+            {
+                conn.Open();
+
+
+                result = Convert.ToInt32(cmd.ExecuteNonQuery());
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+
+            }
+            return result;
+        }
+
+        public int RemoveUserRole(string userName, string roleID)
+        {
+            int result = 0;
+
+            var connectionFactory = new DBConnection();
+            var conn = connectionFactory.GetConnection();
+
+            var cmdText = "sp_remove_user_roles";
+
+            var cmd = new SqlCommand(cmdText, conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("@UserName", SqlDbType.NVarChar, 100);
+            cmd.Parameters.Add("@RoleID", SqlDbType.NVarChar, 50);
+
+
+            cmd.Parameters["@UserName"].Value = userName;
+            cmd.Parameters["@RoleID"].Value = roleID;
+
+            try
+            {
+                conn.Open();
+
+
+                result = Convert.ToInt32(cmd.ExecuteNonQuery());
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+
+            }
+            return result;
         }
     }
 }

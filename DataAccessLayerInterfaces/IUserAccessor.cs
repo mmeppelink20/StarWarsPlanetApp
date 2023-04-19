@@ -16,5 +16,12 @@ namespace DataAccessLayerInterfaces
         List<string> SelectRolesByUserID(int userID);
 
         int UpdatePasswordHash(int userID, string passwordHash, string oldPasswordHash);
+        List<string> SelectAllUserRoles();
+
+        int AddNewUser(string firstName, string lastName, string userName);
+
+        int AddUserRole(int userId, string userName, string roleID);
+
+        int RemoveUserRole(string userName, string roleID);
     }
 }

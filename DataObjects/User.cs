@@ -12,5 +12,8 @@ namespace DataObjects
         public string UserName { get; set; }
         public bool Active{ get; set; }
         public List<string> Roles { get; set; }
+
+        public string FirstName { get; set; }
+        public string FamilyName { get; set; }
     }
 }

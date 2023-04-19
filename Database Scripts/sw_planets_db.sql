@@ -21,9 +21,11 @@ print '' print '*** creating user table'
 GO
 CREATE TABLE [dbo].[User] (
 	[UserID]	    [int] IDENTITY(100000,1)	NOT NULL,
-	[UserName]		[nvarchar](50)				NOT NUll,
+	[UserName]		[nvarchar](100)				NOT NUll,
 	[PasswordHash]	[nvarchar](100)				NOT NULL DEFAULT
 		'9c9064c59f1ffa2e174ee754d2979be80dd30db552ec03e7e327e9b1a4bd594e',
+	[FirstName]		[nvarchar](50)				NOT NUll,
+	[FamilyName]	[nvarchar](100)				NOT NUll,
 	[Active]		[bit]						NOT NULL DEFAULT 1,
 	CONSTRAINT [pk_UserID] PRIMARY KEY([UserID]),
 	CONSTRAINT [ak_UserName] UNIQUE([UserName])
@@ -33,11 +35,11 @@ GO
 print '' print '*** inserting user test records'
 GO
 INSERT INTO [dbo].[User]
-		([UserName], [PasswordHash])
+		([UserName], [PasswordHash], [FirstName], [FamilyName])
     VALUES
-		('admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'), -- "admin"
-		('trustedUser', '043087405c399ce1e55aaf23c934202fe8d2b67cf4e62b3430fcecc5cd9d101a'), -- "trusteduser"
-		('newUser', '9c9064c59f1ffa2e174ee754d2979be80dd30db552ec03e7e327e9b1a4bd594e') -- "newuser"
+		('admin@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 'admin', 'user'), -- P@ssw0rd
+		('trustedUser@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342',  'trusted', 'user'), 
+		('newUser@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 'new', 'user') 
 GO
 
 
@@ -65,11 +67,15 @@ GO
 print '' print '*** creating UserRole table'
 GO
 CREATE TABLE [dbo].[UserRole] (
-	[UserID]		[int] 					NOT NULL,	
+	[UserID]		[int] 					NOT NULL,
+	[UserName]		[nvarchar](100)			NOT NULL,	
 	[RoleID]		[nvarchar](50)			NOT NULL,	
 
 	CONSTRAINT [fk_UserRole_UserID] FOREIGN KEY ([UserID])
 		REFERENCES [dbo].[User]([UserID]),	
+	
+	CONSTRAINT [fk_UserRole_UserName] FOREIGN KEY ([UserName])
+        REFERENCES [dbo].[User]([UserName]),
 
 	CONSTRAINT [fk_UserRole_RoleID] FOREIGN KEY ([RoleID])
 		REFERENCES [dbo].[Role]([RoleID]),
@@ -81,11 +87,11 @@ GO
 print '' print '*** inserting sample UserRole records'
 GO
 INSERT INTO [dbo].[UserRole]
-		([UserID], [RoleID])
+		([UserID], [UserName], [RoleID])
 	VALUES
-		(100000, 'Admin'),
-		(100001, 'Trusted User'),
-		(100002, 'New User')
+		(100000, 'admin@sw.com', 'Admin'),
+		(100001, 'trustedUser@sw.com', 'Trusted User'),
+		(100002, 'newUser@sw.com', 'New User')
 GO
 
 
@@ -120,7 +126,7 @@ CREATE PROCEDURE [dbo].[sp_select_user_by_username]
 )
 AS
 	BEGIN
-		SELECT 	[UserID], [UserName], [Active]
+		SELECT 	[UserID], [UserName], [FirstName], [FamilyName], [Active]
 		FROM	[User]
 		WHERE	@UserName = [UserName]
 	END
@@ -658,3 +664,64 @@ AS
 		WHERE @PlanetID = [PlanetID]
 	END
 GO
+
+print '' print '*** Creating sp_insert_user'
+GO
+CREATE PROCEDURE [dbo].[sp_insert_user]
+	(
+		@FirstName			[nvarchar](50),
+		@FamilyName			[nvarchar](100),
+		@UserName			[nvarchar](100)
+	)
+AS
+	BEGIN
+		INSERT INTO [User]
+			([FirstName], [FamilyName], [UserName])
+		VALUES
+			(@FirstName, @FamilyName, @UserName)
+		
+		SELECT SCOPE_IDENTITY()
+	END
+GO
+
+print '' print '*** creating sp_select_all_user_roles'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_user_roles]
+AS
+	BEGIN
+		SELECT [RoleID]
+		  FROM [Role]
+	END
+GO
+
+print '' PRINT '*** creating sp_add_user_roles';
+GO
+
+CREATE PROCEDURE [dbo].[sp_add_user_roles]
+(
+    @UserID     INT,
+    @UserName   NVARCHAR(100),
+    @RoleID     NVARCHAR(50)    
+)
+AS
+BEGIN
+    INSERT INTO [dbo].[UserRole] (UserID, UserName, RoleID)
+    VALUES (@UserID, @UserName, @RoleID)
+END
+GO
+
+PRINT ''
+PRINT '*** creating sp_delete_user_role'
+GO
+CREATE PROCEDURE [dbo].[sp_delete_user_role]
+(
+	@UserName   [nvarchar](100),
+	@RoleID     [nvarchar](50)
+)
+AS
+BEGIN
+	DELETE FROM [dbo].[UserRole]
+	WHERE [UserName] = @UserName AND [RoleID] = @RoleID;
+END
+GO
+		

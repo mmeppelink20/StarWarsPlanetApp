@@ -1,31 +1,108 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="container">
+    <br />
+</div>
+<div class="container rounded" style="position: relative;">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="my-image-container">
+                <img id="my-image" src="~/Images/starMap.png" style="max-width: 100%; max-height: 100%;" draggable="false" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div id="information-container"></div>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+<style>
+    #information-container {
+        color: white;
+    }
+
+    .circular-button {
+        width: 1.4%;
+        height: 1.4%;
+        font-size: 0.8vw;
+        border-radius: 50%;
+        border: 1px solid #4d4d4d;
+        background: linear-gradient(#222222, #777777);
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+        position: absolute;
+    }
+
+    .circular-button-text {
+        position: absolute;
+        top: -110%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 50%;
+        font-weight: bold;
+        pointer-events: none;
+    }
+
+    .circular-button:hover {
+        background: linear-gradient(#777777, #222222);
+        cursor: pointer;
+    }
+
+        .circular-button:hover .circular-button-text {
+            color: #ffffff;
+        }
+
+    .container.rounded {
+        border: 2px solid black;
+        background-color: #444444;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    #my-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(function () {
+        // Get the image element and its container
+        var img = document.getElementById("my-image");
+        var container = document.getElementById("my-image-container");
+
+        // Add click handler to the image
+        $("#my-image").click(function (event) {
+            // Get the click coordinates relative to the image
+            var x = event.pageX - $(this).offset().left;
+            var y = event.pageY - $(this).offset().top;
+
+            // Log the coordinates to the console
+            console.log("x: " + x + ", y: " + y);
+
+            // Create a new button element
+            var button = $("<button>");
+            button.addClass("circular-button");
+            button.css("left", ((x / img.width) * 100) - .50 + "%");
+            button.css("top", ((y / img.height) * 100) - .50 + "%");
+            button.html("<span class='circular-button-text'>Coruscant</span>");
+
+            // Add the button to the image container
+            $("#my-image-container").append(button);
+
+            // Add information to the information container when the button is clicked
+            button.click(function () {
+                $("#information-container").html("<p>This is the information for Coruscant.</p>");
+            });
+        });
+
+
+    });
+</script>

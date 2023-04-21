@@ -153,7 +153,7 @@
             <Viewbox Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
                 <Grid>
                     <Border x:Name="brdMap" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" Background="#202225" CornerRadius="15"  ClipToBounds="True" Margin="175" Padding="0" />
-                    <Image x:Name="imgMap" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Source="starMap.png" Margin="200" MouseLeftButtonDown="imgMap_MouseLeftButtonDown" Stretch="Fill" />
+                    <Image x:Name="imgMap" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Source="starMap.png" Margin="200" MouseLeftButtonDown="imgMap_MouseLeftButtonDown" Stretch="None" />
                     <Canvas x:Name="canvas" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Margin="  200" />
                     <Button x:Name="btnCancel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="200,0,0,50" Width="250" Height="100" Background="#FF202225" Foreground="#DDFFFFFF" FontSize="55" BorderBrush="{x:Null}" Click="btnCancel_Click" Visibility="Hidden" FontWeight="Bold">
                         Cancel

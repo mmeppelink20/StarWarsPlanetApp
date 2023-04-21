@@ -73,36 +73,47 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
+
     $(function () {
         // Get the image element and its container
         var img = document.getElementById("my-image");
         var container = document.getElementById("my-image-container");
+
+        function createButtonWithCoordinates(x, y) {
+            // Create a new button element
+            var button = $("<button>");
+            button.addClass("circular-button");
+            button.css("left", ((x / img.offsetWidth) * 100) - .50 + "%");
+            button.css("top", ((y / img.offsetHeight) * 100) - .50 + "%");
+            button.html("<span class='circular-button-text'>Generated</span>");
+            // Add the button to the image container
+            $("#my-image-container").append(button);
+            // Add information to the information container when the button is clicked
+            button.click(function () {
+                $("#information-container").html("<h1>This is the information for Generated <p> x: " + x + " y: " + y + "</p></h1>");
+            });
+        }
 
         // Add click handler to the image
         $("#my-image").click(function (event) {
             // Get the click coordinates relative to the image
             var x = event.pageX - $(this).offset().left;
             var y = event.pageY - $(this).offset().top;
-
             // Log the coordinates to the console
-            console.log("x: " + x + ", y: " + y);
-
+            console.log("x: " + x + "y: " + y);
             // Create a new button element
             var button = $("<button>");
             button.addClass("circular-button");
-            button.css("left", ((x / img.width) * 100) - .50 + "%");
-            button.css("top", ((y / img.height) * 100) - .50 + "%");
-            button.html("<span class='circular-button-text'>Coruscant</span>");
-
+            button.css("left", ((x / img.offsetWidth) * 100) - .50 + "%");
+            button.css("top", ((y / img.offsetHeight) * 100) - .50 + "%");
+            button.html("<span class='circular-button-text'>Click</span>");
             // Add the button to the image container
             $("#my-image-container").append(button);
-
             // Add information to the information container when the button is clicked
             button.click(function () {
-                $("#information-container").html("<p>This is the information for Coruscant.</p>");
+                $("#information-container").html("<h1>This is the information for Click <p>" + x + " &nbsp; " + y + "</p></h1>");
             });
         });
-
 
     });
 </script>

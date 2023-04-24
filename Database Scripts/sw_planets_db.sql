@@ -629,6 +629,36 @@ AS
 	END
 GO
 
+print '' print '*** creating sp_select_all_systems'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_systems]
+AS
+	BEGIN
+		Select 	[SystemID]
+		FROM 	[dbo].[PlanetarySystem]
+	END
+GO
+
+print '' print '*** creating sp_select_all_regions'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_regions]
+AS
+	BEGIN
+		Select 	[RegionID]
+		FROM 	[dbo].[Region]
+	END
+GO
+
+print '' print '*** creating sp_select_all_sectors'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_sectors]
+AS
+	BEGIN
+		Select 	[SectorID]
+		FROM 	[dbo].[Sector]
+	END
+GO
+
 print '' print '*** creating sp_select_planet_terrains_by_planetID'
 GO
 CREATE PROCEDURE [dbo].[sp_select_planet_terrains_by_planetID]
@@ -801,6 +831,45 @@ AS
 	BEGIN
 		DELETE FROM [dbo].[PlanetMVC]
 		WHERE @PlanetID = [PlanetID]
+	END
+GO
+
+print '' print '*** creating sp_update_planetMVC'
+GO
+CREATE PROCEDURE [dbo].[sp_update_planetMVC]
+(
+	@OldPlanetID              [nvarchar](50),  
+	@OldSystemID		      [nvarchar](50),
+	@OldGridNumber    	 	  [nvarchar](5),   
+	@OldArticleLink	      	  [nvarchar](250),
+	@OldPlanetCoordinateX 	  [decimal](10, 6),
+	@OldPlanetCoordinateY	  [decimal](10, 6),
+
+	@NewPlanetID              [nvarchar](50),
+	@NewSystemID		      [nvarchar](50),
+	@NewGridNumber    	 	  [nvarchar](5),   
+	@NewArticleLink	      	  [nvarchar](250),
+	@NewPlanetCoordinateX 	  [decimal](10, 6),
+	@NewPlanetCoordinateY	  [decimal](10, 6)
+	
+)
+AS
+	BEGIN
+		UPDATE [PlanetMVC] SET
+		[PlanetID] = 					@NewPlanetID,
+		[SystemID] = 					@NewSystemID,
+		[GridNumber] = 					@NewGridNumber,
+		[ArticleLink] = 				@NewArticleLink,
+		[PlanetCoordinateX] = 			@NewPlanetCoordinateX,
+		[PlanetCoordinateY]  = 			@NewPlanetCoordinateY
+		
+		WHERE @OldPlanetID = 			[PlanetID]
+		  AND @OldSystemID = 			[SystemID]
+		  AND @OldGridNumber = 			[GridNumber]
+		  AND @OldArticleLink = 		[ArticleLink] 
+		  AND @OldPlanetCoordinateX = 	[PlanetCoordinateX] 
+		  AND @OldPlanetCoordinateY = 	[PlanetCoordinateY]
+		RETURN 	@@ROWCOUNT
 	END
 GO
 

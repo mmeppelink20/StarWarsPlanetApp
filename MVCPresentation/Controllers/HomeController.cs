@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataObjects;
+using LogicLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +10,22 @@ namespace MVCPresentation.Controllers
 {
     public class HomeController : Controller
     {
+        private List<PlanetVM> planets;
+        private PlanetManager planetManager = new PlanetManager();
+
+        // GET: Homepage planets
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                planets = planetManager.RetrievePlanetVMsMVCByPlanetID("");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message + ex.InnerException;
+                return View("Error");
+            }
+            return View(planets);
         }
 
         [Authorize]
@@ -27,5 +42,6 @@ namespace MVCPresentation.Controllers
 
             return View();
         }
+
     }
 }

@@ -17,12 +17,20 @@ namespace LogicLayerInterfaces
         int AddPlanetarySystemRecord(string systemID, string sectorID, string systemArticleLink);
         int AddSectorRecord(string sectorID, string regionID, string sectorArticleLink);
         int AddPlanetRecord(Planet planet);
+        int AddPlanetMVCRecord(Planet planet);
         int RetrieveRegionByRegionID(string regionID);
         int RetrieveSectorBySectorID(string sectorID);
         int RetrievePlanetarySystemBySystemID(string systemID);
         int RetrievePlanetByPlanetID(string planetID);
         int UpdatePlanetCoordinates(string planetID, double xCord, double yCord);
         int DeletePlanetByPlanetID(string planetID);
+        List<PlanetVM> RetrievePlanetVMsMVCByPlanetID(string planetID);
+        PlanetVM RetrievePlanetVMMVCByPlanetID(string planetID);
+        int DeletePlanetMVCByPlanetID(string planetID);
+        List<Region> RetrieveAllRegions();
+        List<Sector> RetrieveAllSectors();
+        List<PlanetarySystem> RetrieveAllPlanetarySystem();
+        bool EditPlanetMVC(PlanetVM oldPlanet, PlanetVM newPlanet);
 
     }
 }

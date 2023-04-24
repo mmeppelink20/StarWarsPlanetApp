@@ -1,0 +1,100 @@
+﻿@model DataObjects.PlanetVM
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.PlanetID)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.GridNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.GridNumber)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PlanetArticleLink)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PlanetArticleLink)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PlanetCoordinateX)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PlanetCoordinateX)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PlanetCoordinateY)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PlanetCoordinateY)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SystemID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SystemID)
+            </dd>
+
+            <dt>
+                
+                @Html.DisplayNameFor(model => model.SystemArticleLink)
+            </dt>
+
+            <dd>
+                <a href="@Html.DisplayFor(model => model.SystemArticleLink)">@Html.DisplayFor(model => model.SystemArticleLink)</a>
+                   
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SectorID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SectorID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SectorArticleLink)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SectorArticleLink)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.RegionID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.RegionID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.RegionArticleLink)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.RegionArticleLink)
+            </dd>
+        </dl>
+</div>
+<p>
+    @Html.ActionLink("Delete", "Delete", new { id = Model.PlanetID }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.PlanetID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

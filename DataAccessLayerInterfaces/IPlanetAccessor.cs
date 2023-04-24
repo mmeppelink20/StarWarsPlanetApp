@@ -21,7 +21,14 @@ namespace DataAccessLayerInterfaces
         int SelectPlanetByPlanetID(string planetID);
         int DeletePlanetByPlanetID(string planetID);
         int UpdatePlanetCoordinateByPlanetID(string planetID, double xCord, double yCord);
-
+        List<PlanetVM> SelectPlanetsMVCByPlanetID(string planetID);
+        PlanetVM SelectOnePlanetVMMVCByPlanetID(string planetID);
+        int DeletePlanetMVCByPlanetID(string planetID);
+        List<Region> SelectAllRegions();
+        List<Sector> SelectAllSectors();
+        List<PlanetarySystem> SelectAllPlanetarySystem();
+        int InsertPlanetMVCRecord(Planet planet);
+        int UpdatePlanetMVC(PlanetVM oldPlanet, PlanetVM newPlanet);
 
     }
 }

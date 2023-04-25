@@ -29,10 +29,12 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Planets", "Index", "Planet")</li>
-                        <li>@Html.ActionLink("Systems", "Index", "System")</li>
-                        <li>@Html.ActionLink("Regions", "Index", "Region")</li>
                         <li>@Html.ActionLink("User Administration", "Index", "Admin")</li>
                     }
+                    @if (User.IsInRole("Trusted User"))
+                     {
+                        <li>@Html.ActionLink("Planets", "Index", "Planet")</li>
+                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

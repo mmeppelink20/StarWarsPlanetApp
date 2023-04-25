@@ -12,7 +12,7 @@ namespace DataObjects
         [Required(ErrorMessage = "What is the planet name")]
         public string PlanetID { get; set; }
 
-        [RegularExpression(@"[a-zA-Z]-\d\d", ErrorMessage = "Grid number must follow the \"B-12\" format")]
+        [RegularExpression(@"[A-Za-z0-9]+-\d\d|[A-Za-z0-9]+-\d", ErrorMessage = "Grid number must follow the \"B-12\" or \"B-2\" format")]
         public string GridNumber { get; set; }
 
         [Url]
@@ -32,13 +32,11 @@ namespace DataObjects
         [Url]
         public string SystemArticleLink { get; set; }
 
-        [Required(ErrorMessage = "What is the sector name")]
         public string SectorID { get; set; }
 
         [Url]
         public string SectorArticleLink { get; set; }
 
-        [Required(ErrorMessage = "What is the region name")]
         public string RegionID { get; set; }
 
         [Url]

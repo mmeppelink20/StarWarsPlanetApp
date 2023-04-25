@@ -13,7 +13,7 @@ namespace MVCPresentation.Controllers
         private List<PlanetVM> planets;
         private PlanetManager planetManager = new PlanetManager();
 
-        [Authorize (Roles = "Admin")]
+        [Authorize (Roles = "Admin, Trusted User")]
         // GET: Planet
         public ActionResult Index()
         {
@@ -29,7 +29,7 @@ namespace MVCPresentation.Controllers
             return View(planets);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         // GET: Planet/Details/5
         public ActionResult Details(string id)
         {
@@ -46,7 +46,7 @@ namespace MVCPresentation.Controllers
             return View(planet);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         // GET: Planet/Create
         public ActionResult Create()
         {
@@ -65,32 +65,28 @@ namespace MVCPresentation.Controllers
 
         // POST: Planet/Create
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         public ActionResult Create(Planet planet)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if(planetManager.RetrievePlanetVMMVCByPlanetID(planet.PlanetID) == null)
-                    {
-                        Session["oldPlanet"] = planet.PlanetID;
-                        planetManager.AddPlanetMVCRecord(planet);
-                        return RedirectToAction("Index");
-                    }
-                    ViewBag.Message = planet.PlanetID + " already exists";
-                    return View("Error");
+                    Session["oldPlanet"] = planet.PlanetID;
+                    planetManager.AddPlanetMVCRecord(planet);
+                    return RedirectToAction("Index");
                 }
                 catch (Exception)
                 {
-                    
+                    ViewBag.Message = planet.PlanetID + " already exists";
+                    return View("Error");
                 }
             }
             return View();
         }
 
         // GET: Planet/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         public ActionResult Edit(string id)
         {
             PlanetVM planet = new PlanetVM();
@@ -114,7 +110,7 @@ namespace MVCPresentation.Controllers
 
         // POST: Planet/Edit/5
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         public ActionResult Edit(PlanetVM newPlanet)
         {
             if (ModelState.IsValid)
@@ -138,7 +134,7 @@ namespace MVCPresentation.Controllers
         }
 
         // GET: Planet/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         public ActionResult Delete(string id)
         {
             Planet planet = new Planet();
@@ -156,7 +152,7 @@ namespace MVCPresentation.Controllers
 
         // POST: Planet/Delete/5
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Trusted User")]
         public ActionResult Delete(string id, FormCollection collection)
         {
             try

@@ -43,6 +43,17 @@ namespace DataAccessLayerFakes
             fakePaswordHashes.Add("bad hash");
             fakePaswordHashes.Add("bad hash");
         }
+
+        public int AddNewUser(string firstName, string lastName, string userName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int AddUserRole(int userId, string userName, string roleID)
+        {
+            throw new NotImplementedException();
+        }
+
         public int AuthenticateUserWithUserNameandPasswordHash(string userName, string passwordHash)
         {
             int numAuthenticated = 0;
@@ -58,6 +69,16 @@ namespace DataAccessLayerFakes
                 }
             }
             return numAuthenticated;
+        }
+
+        public int RemoveUserRole(string userName, string roleID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> SelectAllUserRoles()
+        {
+            throw new NotImplementedException();
         }
 
         public List<string> SelectRolesByUserID(int userID)

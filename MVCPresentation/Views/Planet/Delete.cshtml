@@ -1,0 +1,104 @@
+﻿@model DataObjects.PlanetVM
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>DeletePlanet</h2>
+
+<h3>Are you sure you want to delete</h3>
+<div>
+    <h4>@Html.DisplayFor(model => model.PlanetID)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.GridNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GridNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlanetArticleLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlanetArticleLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlanetCoordinateX)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlanetCoordinateX)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlanetCoordinateY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlanetCoordinateY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SystemID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SystemID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SystemArticleLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SystemArticleLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SectorID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SectorID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SectorArticleLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SectorArticleLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegionID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegionID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegionArticleLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegionArticleLink)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

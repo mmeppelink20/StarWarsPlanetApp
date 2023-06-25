@@ -118,7 +118,21 @@ namespace LogicLayer
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("That sector already exists", ex);
+                throw new ApplicationException("That planet already exists", ex);
+            }
+            return result;
+        }
+
+        public int AddPlanetMVCRecord(Planet planet)
+        {
+            int result = 0;
+            try
+            {
+                result = _planetAccessor.InsertPlanetMVCRecord(planet);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("That planet already exists", ex);
             }
             return result;
         }
@@ -180,6 +194,7 @@ namespace LogicLayer
             return result;
         }
 
+
         public int UpdatePlanetCoordinates(string planetID, double xCord, double yCord)
         {
             int result = 0;
@@ -190,6 +205,123 @@ namespace LogicLayer
             catch (Exception ex)
             {
                 throw new ApplicationException("", ex);
+            }
+            return result;
+        }
+
+        public List<PlanetVM> RetrievePlanetVMsMVCByPlanetID(string planetID)
+        {
+            List<PlanetVM> planets = null;
+
+            try
+            {
+                planets = _planetAccessor.SelectPlanetsMVCByPlanetID(planetID);
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return planets;
+        }
+
+        public PlanetVM RetrievePlanetVMMVCByPlanetID(string planetID)
+        {
+            PlanetVM planet = null;
+
+            try
+            {
+                planet = _planetAccessor.SelectOnePlanetVMMVCByPlanetID(planetID);
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return planet;
+        }
+
+        public int DeletePlanetMVCByPlanetID(string planetID)
+        {
+            int result = 0;
+            try
+            {
+                result = _planetAccessor.DeletePlanetMVCByPlanetID(planetID);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("", ex);
+            }
+            return result;
+        }
+
+        public List<Region> RetrieveAllRegions()
+        {
+            List<Region> regions = null;
+
+            try
+            {
+                regions = _planetAccessor.SelectAllRegions();
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return regions;
+        }
+
+        public List<Sector> RetrieveAllSectors()
+        {
+            List<Sector> sectors = null;
+
+            try
+            {
+                sectors = _planetAccessor.SelectAllSectors();
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return sectors;
+        }
+
+        public List<PlanetarySystem> RetrieveAllPlanetarySystem()
+        {
+            List<PlanetarySystem> systems = null;
+
+            try
+            {
+                systems = _planetAccessor.SelectAllPlanetarySystem();
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return systems;
+        }
+
+        public bool EditPlanetMVC(PlanetVM oldPlanet, PlanetVM newPlanet)
+        {
+            bool result = false;
+            try
+            {
+                result = 1 == _planetAccessor.UpdatePlanetMVC(oldPlanet, newPlanet);
+                if (!result)
+                {
+                    throw new ApplicationException("updating planet failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("updating planet failed", ex);
             }
             return result;
         }

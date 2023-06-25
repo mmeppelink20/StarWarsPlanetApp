@@ -1,0 +1,75 @@
+﻿@model IEnumerable<DataObjects.PlanetVM>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<td>
+    @Html.ActionLink("Create", "Create", "Planet") |
+</td>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PlanetID)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.GridNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlanetCoordinateX)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlanetCoordinateY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SystemID)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.SectorID)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.RegionID)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.PlanetID)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.GridNumber)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PlanetCoordinateX)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PlanetCoordinateY)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.SystemID)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.SectorID)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.RegionID)
+    </td>
+
+    <td>
+        @Html.ActionLink("Details", "Details", new { id = item.PlanetID }) |
+    </td>
+</tr>
+    }
+
+</table>

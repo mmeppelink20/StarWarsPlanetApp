@@ -21,9 +21,11 @@ print '' print '*** creating user table'
 GO
 CREATE TABLE [dbo].[User] (
 	[UserID]	    [int] IDENTITY(100000,1)	NOT NULL,
-	[UserName]		[nvarchar](50)				NOT NUll,
+	[UserName]		[nvarchar](100)				NOT NUll,
 	[PasswordHash]	[nvarchar](100)				NOT NULL DEFAULT
 		'9c9064c59f1ffa2e174ee754d2979be80dd30db552ec03e7e327e9b1a4bd594e',
+	[FirstName]		[nvarchar](50)				NOT NUll,
+	[FamilyName]	[nvarchar](100)				NOT NUll,
 	[Active]		[bit]						NOT NULL DEFAULT 1,
 	CONSTRAINT [pk_UserID] PRIMARY KEY([UserID]),
 	CONSTRAINT [ak_UserName] UNIQUE([UserName])
@@ -33,11 +35,11 @@ GO
 print '' print '*** inserting user test records'
 GO
 INSERT INTO [dbo].[User]
-		([UserName], [PasswordHash])
+		([UserName], [PasswordHash], [FirstName], [FamilyName])
     VALUES
-		('admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'), -- "admin"
-		('trustedUser', '043087405c399ce1e55aaf23c934202fe8d2b67cf4e62b3430fcecc5cd9d101a'), -- "trusteduser"
-		('newUser', '9c9064c59f1ffa2e174ee754d2979be80dd30db552ec03e7e327e9b1a4bd594e') -- "newuser"
+		('admin@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 'admin', 'user'), -- P@ssw0rd
+		('trustedUser@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342',  'trusted', 'user'), 
+		('newUser@sw.com', 'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 'new', 'user') 
 GO
 
 
@@ -65,11 +67,15 @@ GO
 print '' print '*** creating UserRole table'
 GO
 CREATE TABLE [dbo].[UserRole] (
-	[UserID]		[int] 					NOT NULL,	
+	[UserID]		[int] 					NOT NULL,
+	[UserName]		[nvarchar](100)			NOT NULL,	
 	[RoleID]		[nvarchar](50)			NOT NULL,	
 
 	CONSTRAINT [fk_UserRole_UserID] FOREIGN KEY ([UserID])
 		REFERENCES [dbo].[User]([UserID]),	
+	
+	CONSTRAINT [fk_UserRole_UserName] FOREIGN KEY ([UserName])
+        REFERENCES [dbo].[User]([UserName]),
 
 	CONSTRAINT [fk_UserRole_RoleID] FOREIGN KEY ([RoleID])
 		REFERENCES [dbo].[Role]([RoleID]),
@@ -81,11 +87,11 @@ GO
 print '' print '*** inserting sample UserRole records'
 GO
 INSERT INTO [dbo].[UserRole]
-		([UserID], [RoleID])
+		([UserID], [UserName], [RoleID])
 	VALUES
-		(100000, 'Admin'),
-		(100001, 'Trusted User'),
-		(100002, 'New User')
+		(100000, 'admin@sw.com', 'Admin'),
+		(100001, 'trustedUser@sw.com', 'Trusted User'),
+		(100002, 'newUser@sw.com', 'New User')
 GO
 
 
@@ -120,7 +126,7 @@ CREATE PROCEDURE [dbo].[sp_select_user_by_username]
 )
 AS
 	BEGIN
-		SELECT 	[UserID], [UserName], [Active]
+		SELECT 	[UserID], [UserName], [FirstName], [FamilyName], [Active]
 		FROM	[User]
 		WHERE	@UserName = [UserName]
 	END
@@ -201,6 +207,21 @@ GO
 print '' print '*** creating Planet table ***'
 GO
 CREATE TABLE [dbo].[Planet] (
+	[PlanetID]           [nvarchar](50)  				NOT NULL,
+	[SystemID]		     [nvarchar](50)        		    NOT NULL,
+	[GridNumber]    	 [nvarchar](5)                  NOT NULL DEFAULT 'A-1',
+	[ArticleLink]	     [nvarchar](250)				NOT NULL DEFAULT 'https://starwars.fandom.com/wiki/Planet',
+	[PlanetCoordinateX]  [decimal](10, 6)				NOT NULL,
+	[PlanetCoordinateY]  [decimal](10, 6)				NOT NULL,
+    CONSTRAINT [pk_PlanetID_MVC] PRIMARY KEY ([PlanetID]),
+    CONSTRAINT [fk_Planet_PlanetarySystemID_MVC] FOREIGN KEY ([SystemID])
+        REFERENCES  [dbo].[PlanetarySystem]([SystemID])
+)
+GO
+
+print '' print '*** creating PlanetMVC table ***'
+GO
+CREATE TABLE [dbo].[PlanetMVC] (
 	[PlanetID]           [nvarchar](50)  				NOT NULL,
 	[SystemID]		     [nvarchar](50)        		    NOT NULL,
 	[GridNumber]    	 [nvarchar](5)                  NOT NULL DEFAULT 'A-1',
@@ -358,7 +379,7 @@ INSERT INTO [dbo].[Planet]
 		('D''Qar', 			'Ileenium', 	'O-17', 	'https://starwars.fandom.com/wiki/D%27Qar',			1114.76718, 1420.03463),
 		('Tatooine',		'Tatoo', 		'R-16', 	'https://starwars.fandom.com/wiki/Tatooine', 		1430.53531, 1332.23568),
 		('Geonosis', 		'Geonosis', 	'R-16', 	'https://starwars.fandom.com/wiki/Geonosis', 		1430.53531, 1301.42904),
-		('Tython', 			'Tython', 		'L-10', 	'https://starwars.fandom.com/wiki/Tython', 			870.684054, 813.868727),
+		('Tython', 			'Tython', 		'L-10', 	'https://starwars.fandom.com/wiki/Tython', 			355.00, 314.00),
 		('Kuat', 			'Kuat', 		'M-10', 	'https://starwars.fandom.com/wiki/Kuat', 			1023.82116, 781.482205),
 		('Corellia', 	  	'Corellian', 	'M-11',		'https://starwars.fandom.com/wiki/Corellia', 		991.434638, 901.775003),
 		('Hosnian Prime', 	'Hosnian', 		'M-12',		'https://starwars.fandom.com/wiki/Hosnian_Prime', 	974.470268, 991.223495),
@@ -392,6 +413,61 @@ INSERT INTO [dbo].[Planet]
 		('Nal Hutta',		'Nal Hutta',	'S-12',		'https://starwars.fandom.com/wiki/Nal_Hutta',		1499.20904, 915.654942),
 		('Takodana',		'Takodana',		'J-16',		'https://starwars.fandom.com/wiki/Takodana',		683.377118, 1267.28004),
 		('Hetzal',			'Hetzal',		'Q-16',		'https://starwars.fandom.com/wiki/Hetzal_Prime',	1368.12071, 1257.28004)
+
+GO
+
+print '' print '*** inserting sample planet records'
+GO
+INSERT INTO [dbo].[PlanetMVC]
+		([PlanetID], [SystemID], [GridNumber], [ArticleLink], [PlanetCoordinateX], [PlanetCoordinatey])
+	VALUES
+		('Coruscant',  		'Coruscant', 	'L-9', 		'https://starwars.fandom.com/wiki/Coruscant',   	350.6363525390625, 267.54544830322266),
+		('Alderaan',   		'Alderaan', 	'M-10', 	'https://starwars.fandom.com/wiki/Alderaan',    	388.6363525390625, 276.54544830322266),
+		('Ajan Kloss', 		'Ajan Kloss', 	'L-5', 		'https://starwars.fandom.com/wiki/Ajan_Kloss', 		372.6363525390625, 132.54544830322266),
+		('Yavin 4', 		'Yavin', 		'P-6', 		'https://starwars.fandom.com/wiki/Yavin_4',      	507.6363525390625, 144.54544830322266),
+		('Cantonica', 		'Cantonica', 	'R-5', 		'https://starwars.fandom.com/wiki/Cantonica',   	593.6363525390625, 79.54544830322266),
+		('Kashyyyk', 		'Kashyyyk', 	'P-9', 		'https://starwars.fandom.com/wiki/Kashyyyk', 		505.6363525390625, 261.54544830322266),
+		('Kamino', 			'Kamino', 		'S-15', 	'https://starwars.fandom.com/wiki/Kamino', 			590.6363525390625, 445.54544830322266),
+		('Kijimi', 			'Kijimi', 		'R-8', 		'https://starwars.fandom.com/wiki/Kijimi', 			555.6363525390625, 211.54544830322266),
+		('Pasaana', 		'Middian', 		'P-12', 	'https://starwars.fandom.com/wiki/Pasaana', 		469.6363525390625, 385.54544830322266),
+		('Naboo', 			'Naboo', 		'O-17', 	'https://starwars.fandom.com/wiki/Naboo', 			452.6363525390625, 498.54544830322266),
+		('D''Qar', 			'Ileenium', 	'O-17', 	'https://starwars.fandom.com/wiki/D%27Qar',			447.6363525390625, 528.5454483032227),
+		('Tatooine',		'Tatoo', 		'R-16', 	'https://starwars.fandom.com/wiki/Tatooine', 		558.6363525390625, 495.54544830322266),
+		('Geonosis', 		'Geonosis', 	'R-16', 	'https://starwars.fandom.com/wiki/Geonosis', 		559.6363525390625, 484.54544830322266),
+		('Tython', 			'Tython', 		'L-10', 	'https://starwars.fandom.com/wiki/Tython', 			355.00, 314.00),
+		('Kuat', 			'Kuat', 		'M-10', 	'https://starwars.fandom.com/wiki/Kuat', 			411.6363525390625, 303.54544830322266),
+		('Corellia', 	  	'Corellian', 	'M-11',		'https://starwars.fandom.com/wiki/Corellia', 		393.6363525390625, 348.54544830322266),
+		('Hosnian Prime', 	'Hosnian', 		'M-12',		'https://starwars.fandom.com/wiki/Hosnian_Prime', 	389.6363525390625, 375.54544830322266),
+		('Jakku', 			'Jakku', 		'I-13',		'https://starwars.fandom.com/wiki/Jakku', 			267.6363525390625, 390.54544830322266),
+		('Ord Mantell', 	'Bright Jewel', 'L-7',		'https://starwars.fandom.com/wiki/Ord_Mantell', 	360.6363525390625, 184.54544830322266),
+		('Scarif', 			'Scarif',		'S-15',		'https://starwars.fandom.com/wiki/Scarif', 			602.6363525390625, 474.54544830322266),
+		('Ryloth',			'Ryloth',		'R-17',		'https://starwars.fandom.com/wiki/Ryloth',			580.6363525390625, 510.54544830322266),
+		('Crait',			'Crait',		'N-17',		'https://starwars.fandom.com/wiki/Crait',			394.50, 529.00),
+		('Sullust',			'Sullust',		'M-17',		'https://starwars.fandom.com/wiki/Sullust',			425.6363525390625, 516.5454483032227),
+		('Polis Massa',		'Polis Massa', 	'K-20',		'https://starwars.fandom.com/wiki/Polis_Massa',		339.6363525390625, 621.5454483032227),
+		('Mustafar',		'Mustafar',		'L-19',		'https://starwars.fandom.com/wiki/Mustafar', 		374.6363525390625, 598.5454483032227),
+		('Dagobah',			'Dagobah',		'M-19',		'https://starwars.fandom.com/wiki/Dagobah',			407.6363525390625, 588.5454483032227),
+		('Utapau',			'Utapau',		'N-19',		'https://starwars.fandom.com/wiki/Utapau',			422.6363525390625, 599.5454483032227),
+		('Bespin',			'Bespin',		'K-18',		'https://starwars.fandom.com/wiki/Bespin',			315.6363525390625, 547.5454483032227),
+		('Hoth',			'Hoth',			'K-18',		'https://starwars.fandom.com/wiki/Hoth',			318.6363525390625, 560.5454483032227),
+		('Batuu',			'Batuu',		'G-15',		'https://starwars.fandom.com/wiki/Batuu',			227.6363525390625, 458.54544830322266),
+		('Endor',			'Endor',		'H-16',		'https://starwars.fandom.com/wiki/Endor',			249.6363525390625, 498.54544830322266),
+		('Ahch-To',			'Ahch-To',		'F-13',		'https://starwars.fandom.com/wiki/Ahch-To',			92.6363525390625, 434.54544830322266),
+		('Rakata Prime',	'Rakata',		'G-11',		'https://starwars.fandom.com/wiki/Rakata_Prime',	201.6363525390625, 331.54544830322266),
+		('Exegol',			'Exegol',		'F-7',		'https://starwars.fandom.com/wiki/Exegol',			117.6363525390625, 172.54544830322266),
+		('Ilum',			'Ilum',			'G-7',		'https://starwars.fandom.com/wiki/Ilum',			223.6363525390625, 173.54544830322266),
+		('Mortis',			'Mortis',		'K-2',		'https://starwars.fandom.com/wiki/Mortis',			343.6363525390625, 13.545448303222656),
+		('Mygeeto',			'Mygeeto',		'K-5',		'https://starwars.fandom.com/wiki/Mygeeto', 		332.6363525390625, 92.54544830322266),
+		('Dantooine',		'Dantooine',	'L-4',		'https://starwars.fandom.com/wiki/Dantooine',		345.6363525390625, 68.54544830322266),
+		('Taris',			'Taris',		'N-7',		'https://starwars.fandom.com/wiki/Taris',			439.6363525390625, 175.54544830322266),
+		('Dathomir',		'Dathomir',		'O-6',		'https://starwars.fandom.com/wiki/Dathomir',		463.6363525390625, 168.54544830322266),
+		('Mandalore',		'Mandalore',	'O-7',		'https://starwars.fandom.com/wiki/Mandalore',		478.6363525390625, 184.54544830322266),
+		('Mon Cala',		'Mon Calamari',	'U-6',		'https://starwars.fandom.com/wiki/Mon_Cala',		651.6363525390625, 164.54544830322266),
+		('Kessel', 			'Kessel',		'T-10',		'https://starwars.fandom.com/wiki/Kessel',			627.6363525390625, 280.54544830322266),
+		('Eadu',			'Eadu',			'U-10',		'https://starwars.fandom.com/wiki/Eadu',			645.6363525390625, 282.54544830322266),
+		('Nal Hutta',		'Nal Hutta',	'S-12',		'https://starwars.fandom.com/wiki/Nal_Hutta',		583.6363525390625, 343.54544830322266),
+		('Takodana',		'Takodana',		'J-16',		'https://starwars.fandom.com/wiki/Takodana',		293.6363525390625, 471.54544830322266),
+		('Hetzal',			'Hetzal',		'Q-16',		'https://starwars.fandom.com/wiki/Hetzal_Prime',	535.6363525390625, 458.54544830322266)
 
 GO
 
@@ -442,6 +518,28 @@ AS
 	END
 GO
 
+print '' print '*** creating sp_select_planet_by_planetID'
+GO
+CREATE PROCEDURE [dbo].[sp_select_planetMVC_by_planetID]
+(
+	@PlanetID		[nvarchar](50)
+)
+AS
+	BEGIN
+		Select 	[PlanetMVC].[PlanetID], [PlanetMVC].[GridNumber], [PlanetMVC].[ArticleLink] AS 'Planet Article', [PlanetMVC].[PlanetCoordinateX], [PlanetMVC].[PlanetCoordinateY], [PlanetMVC].[SystemID],
+		 [PlanetarySystem].[ArticleLink] AS 'System Article', [Sector].[SectorID] AS 'Sector Name', [Sector].[ArticleLink] AS 'Sector Article', [Region].[RegionID] AS 'Region Name', [Region].[ArticleLink] AS 'Region Article'
+
+		FROM 	[dbo].[PlanetMVC]
+		JOIN    [dbo].[PlanetarySystem]
+		  ON 	([PlanetMVC].[SystemID] = [PlanetarySystem].[SystemID])
+		JOIN 	[dbo].[Sector]
+		  ON 	([PlanetarySystem].[SectorID] = [Sector].[SectorID])
+		JOIN	[dbo].[Region]
+		  ON	([Sector].[RegionID]) = [Region].[RegionID]
+		WHERE   [PlanetID] LIKE '%' + @PlanetID + '%'
+	END
+GO
+
 print '' print '*** creating sp_select_one_planet_by_planetID'
 GO
 CREATE PROCEDURE [dbo].[sp_select_one_planet_by_planetID]
@@ -456,6 +554,28 @@ AS
 		FROM 	[dbo].[Planet]
 		JOIN    [dbo].[PlanetarySystem]
 		  ON 	([Planet].[SystemID] = [PlanetarySystem].[SystemID])
+		JOIN 	[dbo].[Sector]
+		  ON 	([PlanetarySystem].[SectorID] = [Sector].[SectorID])
+		JOIN	[dbo].[Region]
+		  ON	([Sector].[RegionID]) = [Region].[RegionID]
+		WHERE   [PlanetID] = @PlanetID
+	END
+GO
+
+print '' print '*** creating sp_select_one_planetMVC_by_planetID'
+GO
+CREATE PROCEDURE [dbo].[sp_select_one_planetMVC_by_planetID]
+(
+	@PlanetID		[nvarchar](50)
+)
+AS
+	BEGIN
+		Select 	[PlanetMVC].[PlanetID], [PlanetMVC].[GridNumber], [PlanetMVC].[ArticleLink] AS 'Planet Article', [PlanetMVC].[PlanetCoordinateX], [PlanetMVC].[PlanetCoordinateY], [PlanetMVC].[SystemID],
+		 [PlanetarySystem].[ArticleLink] AS 'System Article', [Sector].[SectorID] AS 'Sector Name', [Sector].[ArticleLink] AS 'Sector Article', [Region].[RegionID] AS 'Region Name', [Region].[ArticleLink] AS 'Region Article'
+
+		FROM 	[dbo].[PlanetMVC]
+		JOIN    [dbo].[PlanetarySystem]
+		  ON 	([PlanetMVC].[SystemID] = [PlanetarySystem].[SystemID])
 		JOIN 	[dbo].[Sector]
 		  ON 	([PlanetarySystem].[SectorID] = [Sector].[SectorID])
 		JOIN	[dbo].[Region]
@@ -509,6 +629,36 @@ AS
 	END
 GO
 
+print '' print '*** creating sp_select_all_systems'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_systems]
+AS
+	BEGIN
+		Select 	[SystemID]
+		FROM 	[dbo].[PlanetarySystem]
+	END
+GO
+
+print '' print '*** creating sp_select_all_regions'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_regions]
+AS
+	BEGIN
+		Select 	[RegionID]
+		FROM 	[dbo].[Region]
+	END
+GO
+
+print '' print '*** creating sp_select_all_sectors'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_sectors]
+AS
+	BEGIN
+		Select 	[SectorID]
+		FROM 	[dbo].[Sector]
+	END
+GO
+
 print '' print '*** creating sp_select_planet_terrains_by_planetID'
 GO
 CREATE PROCEDURE [dbo].[sp_select_planet_terrains_by_planetID]
@@ -551,6 +701,36 @@ CREATE PROCEDURE [dbo].[sp_insert_planet_record]
 AS
 	BEGIN
 		INSERT INTO [dbo].[Planet]
+		   (PlanetID,         
+			SystemID,		  
+			GridNumber,    	 
+			ArticleLink,	  
+			PlanetCoordinateX,
+			PlanetCoordinateY)
+		VALUES 
+		   (@PlanetID,        
+			@SystemID,	  
+			@GridNumber,	 
+			@ArticleLink,  
+			@PlanetCoordinateX,
+			@PlanetCoordinateY)
+	END
+GO
+
+print '' print '*** creating sp_insert_planetMVC_record'
+GO
+CREATE PROCEDURE [dbo].[sp_insert_planetMVC_record]
+(
+	@PlanetID             [nvarchar](50),  
+	@SystemID		      [nvarchar](50),
+	@GridNumber    	 	  [nvarchar](5),   
+	@ArticleLink	      [nvarchar](250),
+	@PlanetCoordinateX 	  [decimal](10, 6),
+	@PlanetCoordinateY	  [decimal](10, 6)
+)
+AS
+	BEGIN
+		INSERT INTO [dbo].[PlanetMVC]
 		   (PlanetID,         
 			SystemID,		  
 			GridNumber,    	 
@@ -640,6 +820,59 @@ AS
 	END
 GO
 
+
+print '' print '*** creating sp_delete_planetMVC_record'
+GO
+CREATE PROCEDURE [dbo].[sp_delete_planetMVC_record]
+(
+	@PlanetID             [nvarchar](50)
+)
+AS
+	BEGIN
+		DELETE FROM [dbo].[PlanetMVC]
+		WHERE @PlanetID = [PlanetID]
+	END
+GO
+
+print '' print '*** creating sp_update_planetMVC'
+GO
+CREATE PROCEDURE [dbo].[sp_update_planetMVC]
+(
+	@OldPlanetID              [nvarchar](50),  
+	@OldSystemID		      [nvarchar](50),
+	@OldGridNumber    	 	  [nvarchar](5),   
+	@OldArticleLink	      	  [nvarchar](250),
+	@OldPlanetCoordinateX 	  [decimal](10, 6),
+	@OldPlanetCoordinateY	  [decimal](10, 6),
+
+	@NewPlanetID              [nvarchar](50),
+	@NewSystemID		      [nvarchar](50),
+	@NewGridNumber    	 	  [nvarchar](5),   
+	@NewArticleLink	      	  [nvarchar](250),
+	@NewPlanetCoordinateX 	  [decimal](10, 6),
+	@NewPlanetCoordinateY	  [decimal](10, 6)
+	
+)
+AS
+	BEGIN
+		UPDATE [PlanetMVC] SET
+		[PlanetID] = 					@NewPlanetID,
+		[SystemID] = 					@NewSystemID,
+		[GridNumber] = 					@NewGridNumber,
+		[ArticleLink] = 				@NewArticleLink,
+		[PlanetCoordinateX] = 			@NewPlanetCoordinateX,
+		[PlanetCoordinateY]  = 			@NewPlanetCoordinateY
+		
+		WHERE @OldPlanetID = 			[PlanetID]
+		  AND @OldSystemID = 			[SystemID]
+		  AND @OldGridNumber = 			[GridNumber]
+		  AND @OldArticleLink = 		[ArticleLink] 
+		  AND @OldPlanetCoordinateX = 	[PlanetCoordinateX] 
+		  AND @OldPlanetCoordinateY = 	[PlanetCoordinateY]
+		RETURN 	@@ROWCOUNT
+	END
+GO
+
 print '' print '*** creating sp_update_planet_coordinates'
 GO
 CREATE PROCEDURE [dbo].[sp_update_planet_coordinates]
@@ -647,8 +880,6 @@ CREATE PROCEDURE [dbo].[sp_update_planet_coordinates]
 	@PlanetID             [nvarchar](50),
 	@PlanetCoordinateX 	  [decimal](10, 6),
 	@PlanetCoordinateY 	  [decimal](10, 6)
-
-
 )
 AS
 	BEGIN
@@ -658,3 +889,81 @@ AS
 		WHERE @PlanetID = [PlanetID]
 	END
 GO
+
+print '' print '*** creating sp_update_planetMVC_coordinates'
+GO
+CREATE PROCEDURE [dbo].[sp_update_planetMVC_coordinates]
+(
+	@PlanetID             [nvarchar](50),
+	@PlanetCoordinateX 	  [decimal](10, 6),
+	@PlanetCoordinateY 	  [decimal](10, 6)
+)
+AS
+	BEGIN
+		UPDATE [PlanetMVC] SET
+		[PlanetCoordinateX] = @PlanetCoordinateX,
+		[PlanetCoordinateY]  = @PlanetCoordinateY
+		WHERE @PlanetID = [PlanetID]
+	END
+GO
+
+print '' print '*** Creating sp_insert_user'
+GO
+CREATE PROCEDURE [dbo].[sp_insert_user]
+	(
+		@FirstName			[nvarchar](50),
+		@FamilyName			[nvarchar](100),
+		@UserName			[nvarchar](100)
+	)
+AS
+	BEGIN
+		INSERT INTO [User]
+			([FirstName], [FamilyName], [UserName])
+		VALUES
+			(@FirstName, @FamilyName, @UserName)
+		
+		SELECT SCOPE_IDENTITY()
+	END
+GO
+
+print '' print '*** creating sp_select_all_user_roles'
+GO
+CREATE PROCEDURE [dbo].[sp_select_all_user_roles]
+AS
+	BEGIN
+		SELECT [RoleID]
+		  FROM [Role]
+	END
+GO
+
+print '' PRINT '*** creating sp_add_user_roles';
+GO
+
+CREATE PROCEDURE [dbo].[sp_add_user_roles]
+(
+    @UserID     INT,
+    @UserName   NVARCHAR(100),
+    @RoleID     NVARCHAR(50)    
+)
+AS
+BEGIN
+    INSERT INTO [dbo].[UserRole] (UserID, UserName, RoleID)
+    VALUES (@UserID, @UserName, @RoleID)
+END
+GO
+
+PRINT ''
+PRINT '*** creating sp_delete_user_role'
+GO
+CREATE PROCEDURE [dbo].[sp_delete_user_role]
+(
+	@UserName   [nvarchar](100),
+	@RoleID     [nvarchar](50)
+)
+AS
+BEGIN
+	DELETE FROM [dbo].[UserRole]
+	WHERE [UserName] = @UserName AND [RoleID] = @RoleID;
+END
+GO
+		

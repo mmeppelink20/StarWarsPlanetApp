@@ -24,6 +24,29 @@ namespace LogicLayer
             userAccessor = ua;
         }
 
+        public bool FindUser(string userName)
+        {
+            try
+            {
+                return userAccessor.SelectUserByUserName(userName) != null;
+            }
+            catch(ApplicationException ax)
+            {
+                if (ax.Message == "User not found.")
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database Error", ex);
+            }
+        }
+
         public string HashSha256(string source)
         {
             string result = "";
@@ -90,6 +113,83 @@ namespace LogicLayer
         public bool ResetPassword(User user, string email, string password, string oldPassword)
         {
             throw new NotImplementedException();
+        }
+
+        public List<string> RetrieveAllUserRoles()
+        {
+            List<string> roles = null;
+
+            try
+            {
+                roles = userAccessor.SelectAllUserRoles();
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Data not found", ex);
+            }
+
+            return roles;
+        }
+
+        public int RetrieveUserIDFromUserName(string username)
+        {
+            try
+            {
+                return userAccessor.SelectUserByUserName(username).UserID;
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Database Error", ex);
+            }
+        }
+
+        public int AddUser(string firstName, string lastName, string userName)
+        {
+            int result = 0;
+            try
+            {
+                result = userAccessor.AddNewUser(firstName, lastName, userName);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database error", ex);
+            }
+            return result;
+        }
+
+        public bool AddUserRole(int userID, string userName, string roleID)
+        {
+            bool result = false;
+            try
+            {
+                if (userAccessor.AddUserRole(userID, userName, roleID) == 1) 
+                {
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database error", ex);
+            }
+            return result;
+        }
+
+        public bool DeleteUserRole(string userName, string roleID)
+        {
+            bool result = false;
+            try
+            {
+                if (userAccessor.RemoveUserRole(userName, roleID) == 1)
+                {
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database error", ex);
+            }
+            return result;
         }
     }
 }
